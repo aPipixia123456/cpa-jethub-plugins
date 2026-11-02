@@ -2,6 +2,14 @@
 
 本文件记录每个发布版本的用户可见变更。正文文档只描述当前生效的状态；本文件是它们的去处。
 
+## v0.12.1
+
+### 修复：`model_prefix_value` 再次作为所有账号共用的模型前缀
+
+生产配置写的是 `model_prefix_value: codearts`，并且没有 `model_prefix` 键。0.12.0 不读这个键，`auth.go` 改用 AccessKeyID 的前 8 位做前缀，模型变成 `HSTA6NJS/DeepSeek-V4.1-Flash`，原来的 `codearts/DeepSeek-V4.1-Flash` 返回 400 unknown provider。
+
+现在 `model_prefix_value` 非空时，每个账号都用这个前缀（所以仍然是 `codearts/<模型>`）。留空时行为与 0.12.0 相同：`model_prefix` 为真用账号 ID 前 8 位，为假则不加前缀。DeepSeek V4.1 Flash 发往上游的 id 仍是 `deepseek-v4.1-flash-1017`。
+
 ## v0.12.0
 
 ### 修复：CodeArts 的 DeepSeek V4.1 Flash 发往 `deepseek-v4.1-flash-1017`
