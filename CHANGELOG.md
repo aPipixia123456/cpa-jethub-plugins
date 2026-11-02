@@ -2,6 +2,25 @@
 
 本文件记录每个发布版本的用户可见变更。正文文档只描述当前生效的状态；本文件是它们的去处。
 
+## v0.12.0
+
+### 修复：CodeArts 的 DeepSeek V4.1 Flash 发往 `deepseek-v4.1-flash-1017`
+
+华为云现在只认带日期的 id。2026-11-02 实测：签名 POST
+`https://snap-access.cn-north-4.myhuaweicloud.com/api/v2/chat/completions`，模型
+`deepseek-v4.1-flash-1017` 能正常流式返回；不带后缀的 `deepseek-v4.1-flash` 返回
+`InferHub.ModelArts.81003.401`（模型不存在或无权限）。经 CPA 请求
+`codearts/DeepSeek-V4.1-Flash` 时插件把日期后缀剥掉，所以上游收到的永远是会 401 的那个 id。
+
+现在：
+
+- 对外发布名仍是 `DeepSeek-V4.1-Flash`，继续和其他渠道合并成同一个名字；
+- 无论客户端写公开名、不带日期的旧 id，还是目录里的 `deepseek-v4.1-flash-1017`，发往上游的都是 `deepseek-v4.1-flash-1017`；
+- 目录里其他带 4 位日期后缀的 id 按原样发布、按原样请求，不再一律剥掉；
+- 旧例外保留：`deepseek-v4-flash-0731` 仍改写成 `deepseek-v4-flash`（聊天端点拒绝这个带日期的写法）。
+
+`codearts` 的 `PluginVersion` 与 `registry.json` 里该条目的 `version` 升到 `0.12.0`。
+
 ## v0.11.0
 
 ### 统一「模型目录」卡片：列出模型、可筛选、显示上游原名
